@@ -1,0 +1,7 @@
+fastapi
+pydantic
+uvicorn
+configparser
+pymysql
+python-multipart
+sqlalchemy
