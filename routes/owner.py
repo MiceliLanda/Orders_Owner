@@ -9,7 +9,7 @@ from config.db import conn
 
 orderRoute = APIRouter()
 
-@orderRoute.get("/owner/order/pending")
+@orderRoute.post("/owner/order/pending")
 def rechargeCredits(shops_id: int):
     try:
         query = select([tableOrder.c.id, tableOrder.c.status, tableOrder.c.user_id, tableShop.c.name, tableUser.c.name, tableSaucer.c.name]).select_from(tableOrder).join(tableOrderDetails,tableOrder.c.id == tableOrderDetails.c.order_id).join(tableSaucer,tableSaucer.c.id==tableOrderDetails.c.saucer_id).join(tableMenu,tableSaucer.c.menu_id == tableMenu.c.id).join(tableShop,tableMenu.c.shop_id == tableShop.c.id).join(tableUser,tableOrder.c.user_id == tableUser.c.id).where(tableOrder.c.status == 0).where(tableShop.c.id == shops_id)
@@ -39,7 +39,7 @@ def orderCompleted(orden_id: int):
     except Exception as e:
         return {"Error":str(e)}
 
-@orderRoute.get("/owner/orders")
+@orderRoute.post("/owner/orders")
 def getOrdersPushNotifications(shop_id: int):
     try:
         query = select([tableOrder.c.id, tableOrder.c.status, tableOrder.c.user_id, tableShop.c.name, tableUser.c.name, tableSaucer.c.name]).select_from(tableOrder).join(tableOrderDetails,tableOrder.c.id == tableOrderDetails.c.order_id).join(tableSaucer,tableSaucer.c.id==tableOrderDetails.c.saucer_id).join(tableMenu,tableSaucer.c.menu_id == tableMenu.c.id).join(tableShop,tableMenu.c.shop_id == tableShop.c.id).join(tableUser,tableOrder.c.user_id == tableUser.c.id).where(tableOrder.c.status == 2).where(tableShop.c.id == shop_id)
