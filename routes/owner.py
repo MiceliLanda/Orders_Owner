@@ -9,7 +9,7 @@ from config.db import conn
 
 orderRoute = APIRouter()
 
-@orderRoute.post("/owner/order/pending")
+@orderRoute.get("/owner/order/pending/{shop_id}")
 def rechargeCredits(shops_id: int):
     try:
         query = select([tableOrder.c.id, tableOrder.c.status, tableOrder.c.user_id, tableShop.c.name, tableUser.c.name, tableSaucer.c.name]).select_from(tableOrder).join(tableOrderDetails,tableOrder.c.id == tableOrderDetails.c.order_id).join(tableSaucer,tableSaucer.c.id==tableOrderDetails.c.saucer_id).join(tableMenu,tableSaucer.c.menu_id == tableMenu.c.id).join(tableShop,tableMenu.c.shop_id == tableShop.c.id).join(tableUser,tableOrder.c.user_id == tableUser.c.id).where(tableOrder.c.status == 0).where(tableShop.c.id == shops_id)
@@ -21,7 +21,7 @@ def rechargeCredits(shops_id: int):
     except Exception as e:
         return {"Error":str(e)}
 
-@orderRoute.put("/owner/order/inprogress")
+@orderRoute.put("/owner/order/inprogres/{orden_id}")
 def preparingOrder(orden_id: int):
     try:
         query = tableOrder.update().where(tableOrder.c.id == orden_id).values(status=1)
@@ -30,7 +30,7 @@ def preparingOrder(orden_id: int):
     except Exception as e:
         return {"Error":str(e)}      
 
-@orderRoute.put("/owner/order/completed")
+@orderRoute.put("/owner/order/completed/{orden_id}")
 def orderCompleted(orden_id: int):
     try:
         query = tableOrder.update().where(tableOrder.c.id == orden_id).values(status=2)
@@ -39,7 +39,7 @@ def orderCompleted(orden_id: int):
     except Exception as e:
         return {"Error":str(e)}
 
-@orderRoute.post("/owner/orders")
+@orderRoute.get("/owner/orders/{shop_id}")
 def getOrdersPushNotifications(shop_id: int):
     try:
         query = select([tableOrder.c.id, tableOrder.c.status, tableOrder.c.user_id, tableShop.c.name, tableUser.c.name, tableSaucer.c.name]).select_from(tableOrder).join(tableOrderDetails,tableOrder.c.id == tableOrderDetails.c.order_id).join(tableSaucer,tableSaucer.c.id==tableOrderDetails.c.saucer_id).join(tableMenu,tableSaucer.c.menu_id == tableMenu.c.id).join(tableShop,tableMenu.c.shop_id == tableShop.c.id).join(tableUser,tableOrder.c.user_id == tableUser.c.id).where(tableOrder.c.status == 2).where(tableShop.c.id == shop_id)
